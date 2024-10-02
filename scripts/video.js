@@ -1,6 +1,6 @@
 // get time string
 function getTimeString (time){
-    
+
     const hours = Math.floor(time / 3600);
     const reminingSeconds = time % 3600;
     const minutes = Math.floor(reminingSeconds / 60);
@@ -24,12 +24,14 @@ const displayCategories = (categories) => {
     categories.forEach((item) => {
         console.log(item);
         // create a btn 
-        const btn = document.createElement('button');
-        btn.classList = 'btn btn-primary m-2';
-        btn.innerText = item.category;
-
+        const buttonContainer = document.createElement('div');
+       buttonContainer.innerHTML = 
+       `<button class ="btn" onclick= "loadCategoriesVideos(${item.category_id})">
+       ${item.category}
+       </button>`;
+       
         // add btn to container
-        categoryContainer.append(btn);
+        categoryContainer.append(buttonContainer);
     });
 };
 
@@ -39,6 +41,16 @@ const loadVideos = () => {
         .then(res => res.json())
         .then(data => {
             displayVideos(data.videos);
+        })
+        .catch(err => console.log(err));
+};
+
+const loadCategoriesVideos = (id) => {
+    
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            displayVideos(data.category);
         })
         .catch(err => console.log(err));
 };
@@ -66,6 +78,7 @@ const cardDemo = {
 
 const displayVideos = (videos) => {
     const videoContainer = document.getElementById('videos-container');
+    videoContainer.innerHTML = '';
     videos.forEach((video) => {
         console.log(video);
         // create a card
@@ -79,7 +92,7 @@ const displayVideos = (videos) => {
                 alt="" />
                 ${
                     video.others.posted_date?.length == 0 ? '' : 
-                    `<span class="absolute right-2 bottom-2 bg-black rounded text-white">
+                    `<span class="absolute text-xs right-2 bottom-2 bg-black rounded text-white">
                     ${getTimeString(video.others.posted_date)}</span>`
                 }
                 
